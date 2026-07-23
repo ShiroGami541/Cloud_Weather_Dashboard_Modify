@@ -10,6 +10,9 @@ const weatherConfig = {
     95: { text: "Thunderstorm", icon: `<svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>` }
 };
 
+let map;
+let currentMarker;
+
 document.getElementById("cityInput").addEventListener("keypress", (e) => {
     if (e.key === "Enter") searchCity();
 });
@@ -27,6 +30,28 @@ if (localStorage.getItem("theme") === "light") {
     document.body.classList.add("light-mode");
 }
 
+// Initialize Leaflet Map
+function initMap() {
+    map = L.map('map').setView([20, 0], 2);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+}
+
+function updateMapLocation(lat, lon, locationLabel) {
+    if (!map) initMap();
+    map.flyTo([lat, lon], 10, { duration: 1.5 });
+
+    if (currentMarker) {
+        map.removeLayer(currentMarker);
+    }
+
+    currentMarker = L.marker([lat, lon])
+        .addTo(map)
+        .bindPopup(`<b>${locationLabel}</b>`)
+        .openPopup();
+}
+
 async function searchCity(cityNameQuery = null) {
     const city = cityNameQuery || document.getElementById("cityInput").value.trim();
     if (!city) return alert("Please enter a city name.");
@@ -42,7 +67,10 @@ async function searchCity(cityNameQuery = null) {
         }
 
         const { latitude, longitude, name, country } = data.results[0];
-        fetchDashboardData(latitude, longitude, `${name}, ${country || ''}`);
+        const locationLabel = `${name}, ${country || ''}`;
+        
+        fetchDashboardData(latitude, longitude, locationLabel);
+        updateMapLocation(latitude, longitude, locationLabel);
 
     } catch (err) {
         alert("Failed to fetch location information.");
@@ -56,7 +84,7 @@ async function fetchDashboardData(lat, lon, locationLabel) {
         const response = await fetch(weatherURL);
         const data = await response.json();
 
-        // 1. Populate Left Spotlight Card
+        // Populate Left Spotlight Card
         document.getElementById("cityName").innerText = locationLabel;
         document.getElementById("temp").innerText = `${Math.round(data.current.temperature_2m)}°`;
         document.getElementById("humidity").innerText = data.current.relative_humidity_2m;
@@ -76,7 +104,7 @@ async function fetchDashboardData(lat, lon, locationLabel) {
             weekday: 'long', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
         });
 
-        // 2. Populate Metrics Grid
+        // Populate Metrics Grid
         document.getElementById("feelsLike").innerText = `${Math.round(data.current.apparent_temperature)}°`;
         document.getElementById("precipitation").innerText = data.current.precipitation;
         document.getElementById("pressure").innerText = Math.round(data.current.surface_pressure);
@@ -85,7 +113,7 @@ async function fetchDashboardData(lat, lon, locationLabel) {
         document.getElementById("uvIndex").innerText = uv;
         document.getElementById("uvLevel").innerText = uv >= 6 ? "High Risk" : (uv >= 3 ? "Moderate Risk" : "Low Risk");
 
-        // 3. Render 7-Day Forecast Row with UV Ratings
+        // Render 7-Day Forecast Row with UV Ratings
         render7DayForecast(data.daily);
 
     } catch (err) {
@@ -104,7 +132,6 @@ function render7DayForecast(dailyData) {
         const code = dailyData.weather_code[i];
         const icon = (weatherConfig[code] || weatherConfig[0]).icon;
         
-        // UV Index styling calculation
         const uv = dailyData.uv_index_max[i];
         let uvClass = "uv-low";
         if (uv >= 6) uvClass = "uv-high";
@@ -123,10 +150,18 @@ function render7DayForecast(dailyData) {
 
 // Automatic Geolocation Detection on startup
 window.addEventListener("load", () => {
+    initMap();
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
-            (pos) => fetchDashboardData(pos.coords.latitude, pos.coords.longitude, "Local Weather"),
-            () => searchCity("New York")
+            (pos) => {
+                const lat = pos.coords.latitude;
+                const lon = pos.coords.longitude;
+                fetchDashboardData(lat, lon, "Local Weather");
+                updateMapLocation(lat, lon, "Your Location");
+            },
+            () => {
+                searchCity("New York");
+            }
         );
     } else {
         searchCity("New York");
