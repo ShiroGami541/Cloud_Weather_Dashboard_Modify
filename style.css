@@ -349,6 +349,15 @@ body.light-mode .toggle-ball {
 .uv-mod { background: #f59e0b; }
 .uv-high { background: #ef4444; }
 
+/* Interactive Map Container */
+#map {
+    height: 250px;
+    width: 100%;
+    border-radius: 16px;
+    border: 1px solid var(--card-border);
+    z-index: 1;
+}
+
 /* Detailed Metrics Grid */
 .metrics-grid {
     display: grid;
