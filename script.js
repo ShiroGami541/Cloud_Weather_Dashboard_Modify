@@ -14,6 +14,19 @@ document.getElementById("cityInput").addEventListener("keypress", (e) => {
     if (e.key === "Enter") searchCity();
 });
 
+// Theme Switch Logic
+function toggleTheme() {
+    const body = document.body;
+    body.classList.toggle("light-mode");
+    const isLight = body.classList.contains("light-mode");
+    localStorage.setItem("theme", isLight ? "light" : "dark");
+}
+
+// Load Saved Theme Preference
+if (localStorage.getItem("theme") === "light") {
+    document.body.classList.add("light-mode");
+}
+
 async function searchCity(cityNameQuery = null) {
     const city = cityNameQuery || document.getElementById("cityInput").value.trim();
     if (!city) return alert("Please enter a city name.");
@@ -70,9 +83,9 @@ async function fetchDashboardData(lat, lon, locationLabel) {
         
         const uv = data.daily.uv_index_max[0];
         document.getElementById("uvIndex").innerText = uv;
-        document.getElementById("uvLevel").innerText = uv > 6 ? "High Risk" : "Moderate Risk";
+        document.getElementById("uvLevel").innerText = uv >= 6 ? "High Risk" : (uv >= 3 ? "Moderate Risk" : "Low Risk");
 
-        // 3. Render 7-Day Forecast Row
+        // 3. Render 7-Day Forecast Row with UV Ratings
         render7DayForecast(data.daily);
 
     } catch (err) {
@@ -90,12 +103,19 @@ function render7DayForecast(dailyData) {
         const max = Math.round(dailyData.temperature_2m_max[i]);
         const code = dailyData.weather_code[i];
         const icon = (weatherConfig[code] || weatherConfig[0]).icon;
+        
+        // UV Index styling calculation
+        const uv = dailyData.uv_index_max[i];
+        let uvClass = "uv-low";
+        if (uv >= 6) uvClass = "uv-high";
+        else if (uv >= 3) uvClass = "uv-mod";
 
         container.innerHTML += `
             <div class="forecast-card">
                 <span class="forecast-day">${dayName}</span>
                 ${icon}
                 <span class="forecast-temp">${max}°</span>
+                <span class="forecast-uv ${uvClass}">UV ${uv}</span>
             </div>
         `;
     }
