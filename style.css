@@ -2,11 +2,28 @@
     --bg-dark: #070a0f;
     --card-bg: rgba(18, 24, 38, 0.7);
     --card-border: rgba(255, 255, 255, 0.1);
+    --inner-card-bg: rgba(7, 10, 15, 0.4);
     --primary: #38bdf8;
     --primary-glow: rgba(56, 189, 248, 0.25);
     --text-main: #f8fafc;
     --text-muted: #94a3b8;
     --card-radius: 24px;
+    --glow-1: #0284c7;
+    --glow-2: #4f46e5;
+}
+
+/* Light Theme Variables */
+body.light-mode {
+    --bg-dark: #f0f4f9;
+    --card-bg: rgba(255, 255, 255, 0.75);
+    --card-border: rgba(0, 0, 0, 0.08);
+    --inner-card-bg: rgba(235, 242, 250, 0.7);
+    --primary: #0284c7;
+    --primary-glow: rgba(2, 132, 199, 0.2);
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --glow-1: #bae6fd;
+    --glow-2: #c7d2fe;
 }
 
 * {
@@ -14,6 +31,7 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Plus Jakarta Sans', sans-serif;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
 body {
@@ -40,14 +58,14 @@ body {
 .glow-1 {
     width: 500px;
     height: 500px;
-    background: #0284c7;
+    background: var(--glow-1);
     top: -100px;
     left: -100px;
 }
 .glow-2 {
     width: 600px;
     height: 600px;
-    background: #4f46e5;
+    background: var(--glow-2);
     bottom: -150px;
     right: -100px;
 }
@@ -93,16 +111,21 @@ body {
     margin-left: 6px;
 }
 
+.nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
 .search-bar {
     display: flex;
     align-items: center;
     gap: 10px;
-    background: rgba(7, 10, 15, 0.6);
+    background: var(--inner-card-bg);
     border: 1px solid var(--card-border);
     border-radius: 12px;
     padding: 6px 12px;
     width: 380px;
-    transition: all 0.3s ease;
 }
 .search-bar:focus-within {
     border-color: var(--primary);
@@ -118,26 +141,58 @@ body {
 }
 .search-bar button {
     background: var(--primary);
-    color: #070a0f;
+    color: #ffffff;
     border: none;
     padding: 8px 16px;
     border-radius: 8px;
     font-weight: 700;
     cursor: pointer;
-    transition: 0.2s;
-}
-.search-bar button:hover {
-    background: #7dd3fc;
 }
 
-/* Main Two Card Dashboard Grid */
+/* Modern Toggle Switch */
+.theme-toggle {
+    position: relative;
+    width: 62px;
+    height: 34px;
+    background: var(--inner-card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 6px;
+}
+
+.toggle-icon {
+    font-size: 14px;
+    z-index: 1;
+    user-select: none;
+}
+
+.toggle-ball {
+    position: absolute;
+    top: 3px;
+    left: 4px;
+    width: 26px;
+    height: 26px;
+    background: var(--primary);
+    border-radius: 50%;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px var(--primary-glow);
+}
+
+body.light-mode .toggle-ball {
+    transform: translateX(26px);
+}
+
+/* Main Dashboard Grid */
 .dashboard-grid {
     display: grid;
     grid-template-columns: 380px 1fr;
     gap: 24px;
 }
 
-/* Base Card Styles */
 .card {
     background: var(--card-bg);
     backdrop-filter: blur(24px);
@@ -145,15 +200,13 @@ body {
     border: 1px solid var(--card-border);
     border-radius: var(--card-radius);
     padding: 32px;
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
 }
 
-/* LEFT CARD: Weather Spotlight */
 .left-card {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    background: linear-gradient(165deg, rgba(255, 255, 255, 0.05) 0%, rgba(18, 24, 38, 0.8) 100%);
 }
 
 .card-header {
@@ -210,7 +263,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-around;
-    background: rgba(7, 10, 15, 0.4);
+    background: var(--inner-card-bg);
     border: 1px solid var(--card-border);
     border-radius: 16px;
     padding: 16px;
@@ -234,7 +287,6 @@ body {
     background: var(--card-border);
 }
 
-/* RIGHT CARD: Forecast Grid & Details */
 .right-card {
     display: flex;
     flex-direction: column;
@@ -259,15 +311,15 @@ body {
 }
 .forecast-card {
     flex: 1;
-    min-width: 90px;
-    background: rgba(7, 10, 15, 0.4);
+    min-width: 95px;
+    background: var(--inner-card-bg);
     border: 1px solid var(--card-border);
     border-radius: 16px;
-    padding: 16px 10px;
+    padding: 14px 8px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     transition: transform 0.2s ease;
 }
 .forecast-card:hover {
@@ -275,23 +327,36 @@ body {
     border-color: var(--primary);
 }
 .forecast-day {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     color: var(--text-muted);
 }
 .forecast-temp {
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 700;
 }
 
-/* Detailed Grid */
+/* Mini UV Badge inside Forecast Cards */
+.forecast-uv {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 12px;
+    margin-top: 2px;
+    color: #fff;
+}
+.uv-low { background: #10b981; }
+.uv-mod { background: #f59e0b; }
+.uv-high { background: #ef4444; }
+
+/* Detailed Metrics Grid */
 .metrics-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;
 }
 .metric-card {
-    background: rgba(7, 10, 15, 0.4);
+    background: var(--inner-card-bg);
     border: 1px solid var(--card-border);
     border-radius: 16px;
     padding: 20px;
@@ -312,25 +377,13 @@ body {
     color: var(--primary);
 }
 
-/* Responsive Scaling for Tablets and Mobile */
 @media (max-width: 992px) {
-    .dashboard-grid {
-        grid-template-columns: 1fr;
-    }
-    .search-bar {
-        width: 260px;
-    }
+    .dashboard-grid { grid-template-columns: 1fr; }
+    .search-bar { width: 260px; }
 }
 @media (max-width: 600px) {
-    .top-nav {
-        flex-direction: column;
-        gap: 16px;
-        align-items: stretch;
-    }
-    .search-bar {
-        width: 100%;
-    }
-    .metrics-grid {
-        grid-template-columns: 1fr;
-    }
+    .top-nav { flex-direction: column; gap: 16px; align-items: stretch; }
+    .nav-controls { width: 100%; }
+    .search-bar { flex: 1; }
+    .metrics-grid { grid-template-columns: 1fr; }
 }
