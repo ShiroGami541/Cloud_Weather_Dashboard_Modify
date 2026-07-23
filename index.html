@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Weather Web Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Dynamic Atmospheric Background Glows -->
+    <div class="bg-glow glow-1"></div>
+    <div class="bg-glow glow-2"></div>
+
+    <div class="dashboard-wrapper">
+        
+        <!-- Top Navigation Bar -->
+        <header class="top-nav">
+            <div class="brand">
+                <span class="brand-icon">⚡</span>
+                <h2>Cloud Weather <span>OS</span></h2>
+            </div>
+            
+            <div class="search-bar">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text" id="cityInput" placeholder="Search city worldwide..." autocomplete="off">
+                <button onclick="searchCity()" id="searchBtn">Search</button>
+            </div>
+        </header>
+
+        <!-- Main Split Dashboard Layout -->
+        <main class="dashboard-grid">
+
+            <!-- LEFT CARD: Main Highlights -->
+            <section class="card left-card">
+                <div class="card-header">
+                    <div>
+                        <h1 id="cityName">--</h1>
+                        <p id="localTime" class="timestamp">Fetching location...</p>
+                    </div>
+                    <div id="mainWeatherIcon" class="hero-icon">
+                        <svg viewBox="0 0 24 24" width="60" height="60" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                    </div>
+                </div>
+
+                <div class="hero-temperature">
+                    <h1 id="temp">--°</h1>
+                    <div class="hero-meta">
+                        <span id="conditionBadge" class="badge">--</span>
+                        <span id="minMaxTemp" class="sub-temp">H: --° | L: --°</span>
+                    </div>
+                </div>
+
+                <div class="hero-footer-stats">
+                    <div class="mini-stat">
+                        <span class="label">Wind Speed</span>
+                        <span class="val" id="wind">-- <small>km/h</small></span>
+                    </div>
+                    <div class="divider-line"></div>
+                    <div class="mini-stat">
+                        <span class="label">Humidity</span>
+                        <span class="val"><span id="humidity">--</span>%</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- RIGHT CARD: Comprehensive Forecast & Details Grid -->
+            <section class="card right-card">
+                
+                <!-- 7-Day Forecast Section -->
+                <div class="section-block">
+                    <h3 class="block-title">7-Day Extended Forecast</h3>
+                    <div class="forecast-row" id="forecastContainer">
+                        <!-- Dynamic forecast cards injected via JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Detailed Atmospheric Metrics Grid -->
+                <div class="section-block">
+                    <h3 class="block-title">Today's Highlights</h3>
+                    <div class="metrics-grid">
+                        
+                        <div class="metric-card">
+                            <span class="metric-label">UV Index</span>
+                            <span class="metric-value" id="uvIndex">--</span>
+                            <span class="metric-desc" id="uvLevel">Moderate</span>
+                        </div>
+
+                        <div class="metric-card">
+                            <span class="metric-label">Apparent Temp</span>
+                            <span class="metric-value" id="feelsLike">--°</span>
+                            <span class="metric-desc">Feels like actual</span>
+                        </div>
+
+                        <div class="metric-card">
+                            <span class="metric-label">Precipitation</span>
+                            <span class="metric-value" id="precipitation">-- <small>mm</small></span>
+                            <span class="metric-desc">Expected today</span>
+                        </div>
+
+                        <div class="metric-card">
+                            <span class="metric-label">Surface Pressure</span>
+                            <span class="metric-value" id="pressure">-- <small>hPa</small></span>
+                            <span class="metric-desc">Barometric</span>
+                        </div>
+
+                    </div>
+                </div>
+
+            </section>
+
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
