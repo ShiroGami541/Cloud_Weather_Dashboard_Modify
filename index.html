@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="dark-mode">
 
     <!-- Dynamic Atmospheric Background Glows -->
     <div class="bg-glow glow-1"></div>
@@ -24,10 +24,19 @@
                 <h2>Cloud Weather <span>OS</span></h2>
             </div>
             
-            <div class="search-bar">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                <input type="text" id="cityInput" placeholder="Search city worldwide..." autocomplete="off">
-                <button onclick="searchCity()" id="searchBtn">Search</button>
+            <div class="nav-controls">
+                <div class="search-bar">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input type="text" id="cityInput" placeholder="Search city worldwide..." autocomplete="off">
+                    <button onclick="searchCity()" id="searchBtn">Search</button>
+                </div>
+
+                <!-- Modern Light/Dark Mode Switch -->
+                <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+                    <span class="toggle-icon sun-icon">☀️</span>
+                    <span class="toggle-icon moon-icon">🌙</span>
+                    <span class="toggle-ball"></span>
+                </button>
             </div>
         </header>
 
