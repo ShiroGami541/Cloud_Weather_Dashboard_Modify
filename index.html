@@ -8,6 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body class="dark-mode">
 
@@ -76,7 +78,7 @@
                 </div>
             </section>
 
-            <!-- RIGHT CARD: Comprehensive Forecast & Details Grid -->
+            <!-- RIGHT CARD: Comprehensive Forecast, Map & Details Grid -->
             <section class="card right-card">
                 
                 <!-- 7-Day Forecast Section -->
@@ -85,6 +87,12 @@
                     <div class="forecast-row" id="forecastContainer">
                         <!-- Dynamic forecast cards injected via JavaScript -->
                     </div>
+                </div>
+
+                <!-- Live Map Section -->
+                <div class="section-block">
+                    <h3 class="block-title">Live Satellite Location</h3>
+                    <div id="map"></div>
                 </div>
 
                 <!-- Detailed Atmospheric Metrics Grid -->
