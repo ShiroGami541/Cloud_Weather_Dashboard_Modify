@@ -2,175 +2,126 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cloud Weather OS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Weather Dashboard</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
-<body class="dark-mode weather-clear">
-
-    <!-- Atmospheric Dynamic Background Glows -->
+<body>
     <div class="bg-glow glow-1"></div>
     <div class="bg-glow glow-2"></div>
 
     <div class="dashboard-wrapper">
-        
-        <!-- Top Navigation Bar -->
-        <header class="top-nav">
+        <!-- Top Navigation -->
+        <nav class="top-nav">
             <div class="brand">
-                <span class="brand-icon">⚡</span>
-                <h2>Cloud Weather <span>OS</span></h2>
+                <h2>SkyPulse <span>PRO</span></h2>
             </div>
-            
             <div class="nav-controls">
                 <div class="search-bar">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                    <input type="text" id="cityInput" placeholder="Search city..." autocomplete="off">
-                    <button onclick="searchCity()" id="searchBtn">Search</button>
+                    <input type="text" id="city-input" placeholder="Search city..." value="Vadodara">
+                    <button id="search-btn">Search</button>
                 </div>
-
-                <!-- Modern Light/Dark Mode Switch -->
-                <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle Theme">
-                    <span class="toggle-icon sun-icon">🌙</span>
-                    <span class="toggle-icon moon-icon">☀️</span>
-                    <span class="toggle-ball"></span>
-                </button>
+                <div class="theme-toggle" id="theme-toggle">
+                    <span class="toggle-icon">🌙</span>
+                    <span class="toggle-icon">☀️</span>
+                    <div class="toggle-ball"></div>
+                </div>
             </div>
-        </header>
+        </nav>
 
-        <!-- Dynamic Disaster / Storm Alert Banner -->
-        <div id="alertBanner" class="alert-banner hidden">
+        <!-- Weather Disaster Alert Banner (Restored) -->
+        <div class="alert-banner" id="alert-banner">
             <div class="alert-content">
-                <span class="alert-icon" id="alertIcon">⚠️</span>
+                <span class="alert-icon">⚠️</span>
                 <div class="alert-text">
-                    <h4 id="alertTitle">Weather Alert</h4>
-                    <p id="alertDesc">High wind warning in your area.</p>
+                    <h4 id="alert-title">Weather Warning</h4>
+                    <p id="alert-desc">Severe thunderstorm & strong wind advisory in effect for your area.</p>
                 </div>
             </div>
         </div>
 
-        <!-- Main Dashboard Layout -->
         <main class="dashboard-grid">
-
-            <!-- LEFT CARD: Rich Hero Spotlight -->
-            <section class="card left-card" id="heroCard">
-                <!-- Weather Status Ribbon -->
+            <!-- Left Hero Card -->
+            <div class="card left-card">
                 <div class="card-status-bar">
-                    <span class="status-indicator" id="statusPulse"></span>
-                    <span id="liveStatusText">Live Atmospheric Feed</span>
+                    <span class="status-indicator"></span>
+                    <span>Live Weather Data</span>
                 </div>
 
                 <div class="card-header">
                     <div>
-                        <h1 id="cityName">--</h1>
-                        <p id="localTime" class="timestamp">Fetching location...</p>
-                    </div>
-                    <div id="mainWeatherIcon" class="hero-icon">
-                        <svg viewBox="0 0 24 24" width="60" height="60" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                        <h1 id="city-name">Vadodara, IN</h1>
+                        <p class="timestamp" id="current-time">Friday, 09:00 AM</p>
                     </div>
                 </div>
 
-                <!-- Feature-Packed Temperature Box -->
+                <!-- Hero Temp & Units Box -->
                 <div class="hero-temperature-box">
                     <div class="temp-header">
-                        <span id="conditionBadge" class="badge">--</span>
-                        <span id="alertTag" class="alert-pill hidden">Storm Watch</span>
+                        <span class="badge" id="weather-condition">Partly Cloudy</span>
+                        <span class="alert-pill" id="alert-pill">Warning Active</span>
                     </div>
 
                     <div class="main-temp-display">
-                        <h1 id="temp">--°</h1>
+                        <h1 id="main-temp">28°</h1>
                         <div class="temp-sub-details">
-                            <span id="minMaxTemp" class="sub-temp">H: --° | L: --°</span>
-                            <span id="feelsLikeHero" class="feels-like-tag">Feels like --°</span>
+                            <span class="sub-temp" id="high-low">H: 32° &nbsp;•&nbsp; L: 24°</span>
+                            <span class="feels-like-tag" id="feels-like">Feels like 30°</span>
                         </div>
                     </div>
 
-                    <!-- Compact Quick Stats Bar inside Hero -->
+                    <!-- Hero Quick Stats Row -->
                     <div class="hero-packed-info">
                         <div class="hero-info-chip">
-                            <span class="icon">💨</span>
-                            <span id="heroWind">-- km/h</span>
+                            <span class="chip-icon">💨</span>
+                            <span class="chip-value" id="wind-val">14 km/h</span>
                         </div>
                         <div class="hero-info-chip">
-                            <span class="icon">💧</span>
-                            <span id="heroHumidity">--%</span>
+                            <span class="chip-icon">💧</span>
+                            <span class="chip-value" id="humidity-val">65%</span>
                         </div>
                         <div class="hero-info-chip">
-                            <span class="icon">☀️</span>
-                            <span id="heroUv">UV --</span>
+                            <span class="chip-icon">☀️</span>
+                            <span class="chip-value" id="uv-val">UV 6</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="hero-footer-stats">
                     <div class="mini-stat">
-                        <span class="label">Wind Speed</span>
-                        <span class="val" id="wind">-- <small>km/h</small></span>
+                        <span class="label">Pressure</span>
+                        <span class="val" id="pressure-val">1012 hPa</span>
                     </div>
                     <div class="divider-line"></div>
                     <div class="mini-stat">
-                        <span class="label">Humidity</span>
-                        <span class="val"><span id="humidity">--</span>%</span>
+                        <span class="label">Visibility</span>
+                        <span class="val" id="vis-val">10 km</span>
                     </div>
                 </div>
-            </section>
+            </div>
 
-            <!-- RIGHT CARD: Comprehensive Forecast, Map & Details Grid -->
-            <section class="card right-card">
-                
-                <!-- 7-Day Forecast Section -->
-                <div class="section-block">
-                    <h3 class="block-title">7-Day Extended Forecast</h3>
-                    <div class="forecast-row" id="forecastContainer">
-                        <!-- Forecast cards injected via JavaScript -->
+            <!-- Right Details Card -->
+            <div class="card right-card">
+                <div>
+                    <h3 class="block-title">Weekly Forecast</h3>
+                    <!-- Modern Horizontal Forecast Scrollbar -->
+                    <div class="forecast-row" id="forecast-container">
+                        <!-- Dynamic items injected here -->
                     </div>
                 </div>
 
-                <!-- Live Map Section -->
-                <div class="section-block">
-                    <h3 class="block-title">Live Satellite Location</h3>
+                <div>
+                    <h3 class="block-title">Radar Map</h3>
                     <div id="map"></div>
                 </div>
-
-                <!-- Detailed Atmospheric Metrics Grid -->
-                <div class="section-block">
-                    <h3 class="block-title">Today's Highlights</h3>
-                    <div class="metrics-grid">
-                        <div class="metric-card">
-                            <span class="metric-label">UV Index</span>
-                            <span class="metric-value" id="uvIndex">--</span>
-                            <span class="metric-desc" id="uvLevel">Moderate</span>
-                        </div>
-
-                        <div class="metric-card">
-                            <span class="metric-label">Apparent Temp</span>
-                            <span class="metric-value" id="feelsLike">--°</span>
-                            <span class="metric-desc">Feels like actual</span>
-                        </div>
-
-                        <div class="metric-card">
-                            <span class="metric-label">Precipitation</span>
-                            <span class="metric-value" id="precipitation">-- <small>mm</small></span>
-                            <span class="metric-desc">Expected today</span>
-                        </div>
-
-                        <div class="metric-card">
-                            <span class="metric-label">Surface Pressure</span>
-                            <span class="metric-value" id="pressure">-- <small>hPa</small></span>
-                            <span class="metric-desc">Barometric</span>
-                        </div>
-                    </div>
-                </div>
-
-            </section>
-
+            </div>
         </main>
     </div>
 
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
