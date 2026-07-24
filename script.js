@@ -1,22 +1,18 @@
-// Initialize Map
 const map = L.map('map').setView([22.3072, 73.1812], 10);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap'
 }).addTo(map);
 
-// Theme Toggle Handler
 const themeToggle = document.getElementById('theme-toggle');
 themeToggle.addEventListener('click', () => {
     document.body.classList.toggle('light-mode');
 });
 
-// Search Handler
 document.getElementById('search-btn').addEventListener('click', () => {
     const city = document.getElementById('city-input').value;
     if (city) fetchCoordinates(city);
 });
 
-// Fetch City Coordinates
 async function fetchCoordinates(cityName) {
     try {
         const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cityName)}&count=1&language=en&format=json`);
@@ -32,7 +28,6 @@ async function fetchCoordinates(cityName) {
     }
 }
 
-// Fetch Full Weather Data
 async function fetchWeatherData(lat, lon) {
     try {
         const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,surface_pressure,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,uv_index_max&timezone=auto`;
@@ -46,32 +41,27 @@ async function fetchWeatherData(lat, lon) {
     }
 }
 
-// Update Current Metrics
 function updateCurrentWeather(data) {
     const current = data.current;
     const daily = data.daily;
 
-    // Core Values
     document.getElementById('main-temp').innerText = `${Math.round(current.temperature_2m)}°`;
     document.getElementById('feels-like').innerText = `Feels like ${Math.round(current.apparent_temperature)}°`;
     document.getElementById('high-low').innerText = `H: ${Math.round(daily.temperature_2m_max[0])}°  •  L: ${Math.round(daily.temperature_2m_min[0])}°`;
 
-    // Restored Quick Stats
     document.getElementById('wind-val').innerText = `${Math.round(current.wind_speed_10m)} km/h`;
     document.getElementById('humidity-val').innerText = `${Math.round(current.relative_humidity_2m)}%`;
     document.getElementById('uv-val').innerText = `UV ${Math.round(daily.uv_index_max[0])}`;
     document.getElementById('pressure-val').innerText = `${Math.round(current.surface_pressure)} hPa`;
 
-    // Weather condition and disaster alert check
     const code = current.weather_code;
     const conditionText = getWeatherDescription(code);
     document.getElementById('weather-condition').innerText = conditionText;
 
-    // Check for severe weather disaster conditions (thunderstorms, heavy snow, severe rain)
-    const alertBanner = document.getElementById('alert-banner');
+     const alertBanner = document.getElementById('alert-banner');
     const alertPill = document.getElementById('alert-pill');
 
-    if (code >= 95 || current.wind_speed_10m > 40) { // Weather code >= 95 is thunderstorm
+    if (code >= 95 || current.wind_speed_10m > 40) { 
         alertBanner.classList.remove('hidden');
         alertPill.classList.remove('hidden');
         document.getElementById('alert-title').innerText = "Severe Weather Warning";
@@ -82,7 +72,6 @@ function updateCurrentWeather(data) {
     }
 }
 
-// Populate Forecast
 function updateForecast(daily) {
     const container = document.getElementById('forecast-container');
     container.innerHTML = '';
@@ -108,7 +97,6 @@ function updateForecast(daily) {
     }
 }
 
-// Helpers
 function getWeatherDescription(code) {
     if (code === 0) return 'Clear Sky';
     if (code <= 3) return 'Partly Cloudy';
@@ -127,5 +115,4 @@ function getWeatherIcon(code) {
     return '☁️';
 }
 
-// Initial Load
 fetchCoordinates('Vadodara');
