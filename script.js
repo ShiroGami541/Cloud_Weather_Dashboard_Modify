@@ -1,3 +1,6 @@
+let currentCityTimezone = 'UTC';
+let clockInterval = null;
+
 const map = L.map('map').setView([22.3072, 73.1812], 10);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap'
@@ -14,7 +17,14 @@ document.getElementById('search-btn').addEventListener('click', () => {
     if (city) fetchCoordinates(city);
 });
 
-// Laptop View Navigation Fixing Event Binding
+document.getElementById('city-input').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        const city = document.getElementById('city-input').value;
+        if (city) fetchCoordinates(city);
+    }
+});
+
+// Laptop/Desktop Arrow Scroll Controller
 document.addEventListener('DOMContentLoaded', () => {
     const forecastRow = document.getElementById('forecast-container');
     const leftBtn = document.getElementById('scroll-left');
@@ -32,6 +42,33 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// Real-Time Clock Function
+function startRealtimeClock(timezone) {
+    currentCityTimezone = timezone;
+
+    function updateTime() {
+        try {
+            const now = new Date();
+            const formatter = new Intl.DateTimeFormat('en-US', {
+                timeZone: currentCityTimezone,
+                weekday: 'long',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true
+            });
+            document.getElementById('current-time').innerText = formatter.format(now);
+        } catch (err) {
+            console.error("Timezone formatting error:", err);
+            document.getElementById('current-time').innerText = new Date().toLocaleTimeString();
+        }
+    }
+
+    if (clockInterval) clearInterval(clockInterval);
+    updateTime();
+    clockInterval = setInterval(updateTime, 1000);
+}
 
 async function fetchCoordinates(cityName) {
     try {
@@ -54,6 +91,11 @@ async function fetchWeatherData(lat, lon) {
         const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,surface_pressure,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,uv_index_max&timezone=auto`;
         const res = await fetch(url);
         const data = await res.json();
+
+        // Start live clock for searched city's timezone
+        if (data.timezone) {
+            startRealtimeClock(data.timezone);
+        }
 
         updateCurrentWeather(data);
         updateForecast(data.daily);
