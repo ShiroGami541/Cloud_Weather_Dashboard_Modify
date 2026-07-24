@@ -14,15 +14,23 @@ document.getElementById('search-btn').addEventListener('click', () => {
     if (city) fetchCoordinates(city);
 });
 
-// Fixed Horizontal Button Navigation
-const forecastRow = document.getElementById('forecast-container');
-document.getElementById('scroll-left').addEventListener('click', (e) => {
-    e.preventDefault();
-    forecastRow.scrollBy({ left: -180, behavior: 'smooth' });
-});
-document.getElementById('scroll-right').addEventListener('click', (e) => {
-    e.preventDefault();
-    forecastRow.scrollBy({ left: 180, behavior: 'smooth' });
+// Laptop View Navigation Fixing Event Binding
+document.addEventListener('DOMContentLoaded', () => {
+    const forecastRow = document.getElementById('forecast-container');
+    const leftBtn = document.getElementById('scroll-left');
+    const rightBtn = document.getElementById('scroll-right');
+
+    if (leftBtn && forecastRow) {
+        leftBtn.addEventListener('click', () => {
+            forecastRow.scrollBy({ left: -220, behavior: 'smooth' });
+        });
+    }
+
+    if (rightBtn && forecastRow) {
+        rightBtn.addEventListener('click', () => {
+            forecastRow.scrollBy({ left: 220, behavior: 'smooth' });
+        });
+    }
 });
 
 async function fetchCoordinates(cityName) {
@@ -72,13 +80,12 @@ function updateCurrentWeather(data) {
 
     document.getElementById('weather-condition').innerText = getWeatherDescription(code);
 
-    // Dynamic Weather Alert Logic (Heat, Cold, Storm, Snow, Rain)
     const alertBanner = document.getElementById('alert-banner');
     const alertTitle = document.getElementById('alert-title');
     const alertDesc = document.getElementById('alert-desc');
     const alertIcon = document.getElementById('alert-icon');
 
-    alertBanner.className = 'alert-banner'; // Reset classes
+    alertBanner.className = 'alert-banner';
 
     if (code >= 80 || code === 95 || code === 96 || code === 99) {
         alertBanner.classList.add('alert-storm');
