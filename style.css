@@ -120,6 +120,35 @@ body {
 .search-bar input { background: transparent; border: none; outline: none; color: var(--text-main); width: 100%; font-size: 13px; }
 .search-bar button { background: var(--primary); color: #fff; border: none; padding: 6px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 13px; }
 
+/* Theme Toggle Button Styling */
+.theme-toggle {
+    position: relative;
+    width: 50px;
+    height: 26px;
+    background: var(--inner-card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 5px;
+    cursor: pointer;
+}
+.toggle-icon { font-size: 12px; }
+.toggle-ball {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background: var(--primary);
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+}
+body.light-mode .toggle-ball {
+    transform: translateX(24px);
+}
+
 .alert-banner {
     background: var(--alert-bg);
     border: 1px solid var(--alert-border);
@@ -266,16 +295,19 @@ body {
     max-width: 100%;
 }
 
+/* ========================================== */
+/* PHONE / MOBILE RESPONSIVE MEDIA QUERY      */
+/* ========================================== */
 @media (max-width: 850px) {
     body { 
         padding: 10px; 
     }
-    
+
     .dashboard-grid { 
         grid-template-columns: 1fr; 
     }
 
-
+    /* Stack Top Navigation vertically on Mobile */
     .top-nav { 
         flex-direction: column; 
         align-items: stretch; 
@@ -286,7 +318,7 @@ body {
         text-align: center;
     }
 
-
+    /* Arrange controls vertically in order */
     .nav-controls { 
         width: 100%; 
         flex-direction: column; 
@@ -294,24 +326,29 @@ body {
         gap: 10px; 
     }
 
-
+    /* 1. Location Button (First in Order) */
     #location-btn {
         width: 100%;
         text-align: center;
         padding: 10px;
+        order: 1;
     }
 
+    /* 2. Search Bar (Second in Order) */
     .search-bar { 
         width: 100%; 
         box-sizing: border-box;
+        order: 2;
     }
 
+    /* 3. Light/Dark Theme Switch (Third in Order) */
     .theme-toggle {
-        align-self: center; 
+        align-self: center;
         margin-top: 4px;
+        order: 3;
     }
 
-
+    /* Mobile Card Layout Adjustments */
     .card { 
         padding: 16px; 
     }
