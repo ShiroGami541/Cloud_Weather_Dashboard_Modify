@@ -3,6 +3,9 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap'
 }).addTo(map);
 
+// Fix map border clipping on initial render
+setTimeout(() => { map.invalidateSize(); }, 300);
+
 document.getElementById('theme-toggle').addEventListener('click', () => {
     document.body.classList.toggle('light-mode');
 });
@@ -12,13 +15,12 @@ document.getElementById('search-btn').addEventListener('click', () => {
     if (city) fetchCoordinates(city);
 });
 
-// Modern Scroller Navigation
 const forecastRow = document.getElementById('forecast-container');
 document.getElementById('scroll-left').addEventListener('click', () => {
-    forecastRow.scrollBy({ left: -200, behavior: 'smooth' });
+    forecastRow.scrollBy({ left: -160, behavior: 'smooth' });
 });
 document.getElementById('scroll-right').addEventListener('click', () => {
-    forecastRow.scrollBy({ left: 200, behavior: 'smooth' });
+    forecastRow.scrollBy({ left: 160, behavior: 'smooth' });
 });
 
 async function fetchCoordinates(cityName) {
@@ -29,6 +31,7 @@ async function fetchCoordinates(cityName) {
             const { latitude, longitude, name, country_code } = data.results[0];
             document.getElementById('city-name').innerText = `${name}, ${country_code}`;
             map.setView([latitude, longitude], 10);
+            setTimeout(() => { map.invalidateSize(); }, 200);
             fetchWeatherData(latitude, longitude);
         }
     } catch (err) {
@@ -55,27 +58,20 @@ function updateCurrentWeather(data) {
 
     document.getElementById('main-temp').innerText = `${Math.round(current.temperature_2m)}°`;
     document.getElementById('feels-like').innerText = `Feels like ${Math.round(current.apparent_temperature)}°`;
-    document.getElementById('high-low').innerText = `H: ${Math.round(daily.temperature_2m_max[0])}°  |  L: ${Math.round(daily.temperature_2m_min[0])}°`;
+    document.getElementById('high-low').innerText = `H: ${Math.round(daily.temperature_2m_max[0])}°  •  L: ${Math.round(daily.temperature_2m_min[0])}°`;
 
-    document.getElementById('wind-val').innerText = `${current.wind_speed_10m} km/h`;
-    document.getElementById('humidity-val').innerText = `${current.relative_humidity_2m}%`;
-    document.getElementById('uv-val').innerText = `UV ${daily.uv_index_max[0]}`;
+    document.getElementById('wind-val').innerText = `${Math.round(current.wind_speed_10m)} km/h`;
+    document.getElementById('humidity-val').innerText = `${Math.round(current.relative_humidity_2m)}%`;
+    document.getElementById('uv-val').innerText = `UV ${Math.round(daily.uv_index_max[0])}`;
     document.getElementById('pressure-val').innerText = `${Math.round(current.surface_pressure)} hPa`;
 
     const code = current.weather_code;
+    const cityName = document.getElementById('city-name').innerText;
     document.getElementById('weather-condition').innerText = getWeatherDescription(code);
 
-    // Universal Severe Storm Check (daily forecast or current condition or wind >= 15 km/h)
-    const alertBanner = document.getElementById('alert-banner');
-    const isStormInForecast = daily.weather_code.some(c => c >= 80) || code >= 80 || current.wind_speed_10m >= 15;
-
-    if (isStormInForecast) {
-        alertBanner.classList.remove('hidden');
-        document.getElementById('alert-title').innerText = "STORM & RAINFALL ALERT";
-        document.getElementById('alert-desc').innerText = `Active storm/rain alert for ${document.getElementById('city-name').innerText}. Wind: ${current.wind_speed_10m} km/h.`;
-    } else {
-        alertBanner.classList.add('hidden');
-    }
+    // Keep alert banner content updated dynamically
+    document.getElementById('alert-title').innerText = "WEATHER ADVISORY & ALERT";
+    document.getElementById('alert-desc').innerText = `Active storm/rain advisory for ${cityName}. Wind speed: ${Math.round(current.wind_speed_10m)} km/h.`;
 }
 
 function updateForecast(daily) {
@@ -88,7 +84,7 @@ function updateForecast(daily) {
         const date = new Date(daily.time[i]);
         const dayName = i === 0 ? 'Today' : days[date.getDay()];
         const maxTemp = Math.round(daily.temperature_2m_max[i]);
-        const uv = daily.uv_index_max[i];
+        const uv = Math.round(daily.uv_index_max[i]);
         const uvClass = uv <= 2 ? 'uv-low' : (uv <= 5 ? 'uv-mod' : 'uv-high');
 
         const card = document.createElement('div');
