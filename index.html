@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Weather Dashboard</title>
+    <title>Cloud Weather Dashboard</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -16,7 +16,7 @@
     <div class="dashboard-wrapper">
         <nav class="top-nav">
             <div class="brand">
-                <h2>SkyPulse <span>PRO</span></h2>
+                <h2>Cloud Weather <span>OS</span></h2>
             </div>
             <div class="nav-controls">
                 <div class="search-bar">
@@ -33,10 +33,10 @@
 
         <div class="alert-banner" id="alert-banner">
             <div class="alert-content">
-                <span class="alert-icon">⚠️</span>
+                <span class="alert-icon">⚡</span>
                 <div class="alert-text">
-                    <h4 id="alert-title">Weather Warning</h4>
-                    <p id="alert-desc">Severe thunderstorm & strong wind advisory in effect for your area.</p>
+                    <h4 id="alert-title">STORM & RAINFALL ALERT</h4>
+                    <p id="alert-desc">Severe weather forecast warning active in this area.</p>
                 </div>
             </div>
         </div>
@@ -45,54 +45,53 @@
             <div class="card left-card">
                 <div class="card-status-bar">
                     <span class="status-indicator"></span>
-                    <span>Live Weather Data</span>
+                    <span>LIVE ATMOSPHERIC FEED</span>
                 </div>
 
                 <div class="card-header">
                     <div>
-                        <h1 id="city-name">Vadodara, IN</h1>
+                        <h1 id="city-name">Vadodara, India</h1>
                         <p class="timestamp" id="current-time">Friday, 09:00 AM</p>
                     </div>
                 </div>
 
                 <div class="hero-temperature-box">
                     <div class="temp-header">
-                        <span class="badge" id="weather-condition">Partly Cloudy</span>
-                        <span class="alert-pill" id="alert-pill">Warning Active</span>
+                        <span class="badge" id="weather-condition">Clear</span>
                     </div>
 
                     <div class="main-temp-display">
-                        <h1 id="main-temp">28°</h1>
+                        <h1 id="main-temp">26°</h1>
                         <div class="temp-sub-details">
-                            <span class="sub-temp" id="high-low">H: 32° &nbsp;•&nbsp; L: 24°</span>
-                            <span class="feels-like-tag" id="feels-like">Feels like 30°</span>
+                            <span class="sub-temp" id="high-low">H: 30° &nbsp;|&nbsp; L: 25°</span>
+                            <span class="feels-like-tag" id="feels-like">Feels like 31°</span>
                         </div>
                     </div>
 
                     <div class="hero-packed-info">
                         <div class="hero-info-chip">
                             <span class="chip-icon">💨</span>
-                            <span class="chip-value" id="wind-val">14 km/h</span>
+                            <span class="chip-value" id="wind-val">15.2 km/h</span>
                         </div>
                         <div class="hero-info-chip">
                             <span class="chip-icon">💧</span>
-                            <span class="chip-value" id="humidity-val">65%</span>
+                            <span class="chip-value" id="humidity-val">94%</span>
                         </div>
                         <div class="hero-info-chip">
                             <span class="chip-icon">☀️</span>
-                            <span class="chip-value" id="uv-val">UV 6</span>
+                            <span class="chip-value" id="uv-val">UV 5.95</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="hero-footer-stats">
                     <div class="mini-stat">
-                        <span class="label">Pressure</span>
-                        <span class="val" id="pressure-val">1012 hPa</span>
+                        <span class="label">PRESSURE</span>
+                        <span class="val" id="pressure-val">1008 hPa</span>
                     </div>
                     <div class="divider-line"></div>
                     <div class="mini-stat">
-                        <span class="label">Visibility</span>
+                        <span class="label">VISIBILITY</span>
                         <span class="val" id="vis-val">10 km</span>
                     </div>
                 </div>
@@ -100,13 +99,16 @@
 
             <div class="card right-card">
                 <div>
-                    <h3 class="block-title">Weekly Forecast</h3>
-                    <div class="forecast-row" id="forecast-container">
+                    <h3 class="block-title">7-DAY EXTENDED FORECAST</h3>
+                    <div class="forecast-scroller-wrapper">
+                        <button class="nav-arrow left-arrow" id="scroll-left">‹</button>
+                        <div class="forecast-row" id="forecast-container"></div>
+                        <button class="nav-arrow right-arrow" id="scroll-right">›</button>
                     </div>
                 </div>
 
                 <div>
-                    <h3 class="block-title">Radar Map</h3>
+                    <h3 class="block-title">LIVE SATELLITE LOCATION</h3>
                     <div id="map"></div>
                 </div>
             </div>
