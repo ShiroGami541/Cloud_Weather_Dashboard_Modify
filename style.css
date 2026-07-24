@@ -267,13 +267,64 @@ body {
 }
 
 @media (max-width: 850px) {
-    body { padding: 10px; }
-    .dashboard-grid { grid-template-columns: 1fr; }
-    .top-nav { flex-direction: column; align-items: stretch; gap: 10px; }
-    .nav-controls { width: 100%; justify-content: space-between; flex-wrap: wrap; }
-    .search-bar { flex: 1; }
-    .card { padding: 16px; }
-    .main-temp-display h1 { font-size: 54px; }
-    .forecast-scroller-wrapper { padding: 0; }
-    .nav-arrow { display: none; }
+    body { 
+        padding: 10px; 
+    }
+    
+    .dashboard-grid { 
+        grid-template-columns: 1fr; 
+    }
+
+
+    .top-nav { 
+        flex-direction: column; 
+        align-items: stretch; 
+        gap: 14px; 
+    }
+
+    .brand {
+        text-align: center;
+    }
+
+
+    .nav-controls { 
+        width: 100%; 
+        flex-direction: column; 
+        align-items: stretch;
+        gap: 10px; 
+    }
+
+
+    #location-btn {
+        width: 100%;
+        text-align: center;
+        padding: 10px;
+    }
+
+    .search-bar { 
+        width: 100%; 
+        box-sizing: border-box;
+    }
+
+    .theme-toggle {
+        align-self: center; 
+        margin-top: 4px;
+    }
+
+
+    .card { 
+        padding: 16px; 
+    }
+
+    .main-temp-display h1 { 
+        font-size: 54px; 
+    }
+
+    .forecast-scroller-wrapper { 
+        padding: 0; 
+    }
+
+    .nav-arrow { 
+        display: none; 
+    }
 }
