@@ -130,7 +130,7 @@ body {
 .status-indicator { width: 7px; height: 7px; background: #10b981; border-radius: 50%; box-shadow: 0 0 8px #10b981; }
 
 .card-header h1 { font-size: 26px; font-weight: 800; }
-.timestamp { color: var(--text-muted); font-size: 12px; margin-top: 2px; }
+.timestamp { color: var(--text-muted); font-size: 12px; margin-top: 2px; font-weight: 600; }
 
 .hero-temperature-box {
     background: var(--hero-bg-accent);
@@ -180,13 +180,12 @@ body {
 .right-card { display: flex; flex-direction: column; gap: 20px; width: 100%; overflow: hidden; }
 .block-title { font-size: 11px; font-weight: 800; color: var(--text-muted); letter-spacing: 0.8px; margin-bottom: 10px; }
 
-/* Laptop & Desktop Scroller Wrapper */
 .forecast-scroller-wrapper {
     position: relative;
     display: flex;
     align-items: center;
     width: 100%;
-    padding: 0 36px; /* Padding for laptop navigation arrows */
+    padding: 0 36px;
 }
 
 .nav-arrow {
