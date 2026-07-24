@@ -11,7 +11,6 @@
     --glow-2: #3b82f6;
     --hero-bg-accent: rgba(56, 189, 248, 0.03);
 
-    /* Alert Theme Defaults */
     --alert-bg: linear-gradient(90deg, rgba(239, 68, 68, 0.2) 0%, rgba(185, 28, 28, 0.08) 100%);
     --alert-border: rgba(239, 68, 68, 0.4);
     --alert-text: #f87171;
@@ -29,7 +28,6 @@ body.light-mode {
     --glow-2: #c7d2fe;
 }
 
-/* Alert Type Themes */
 .alert-banner.alert-heat {
     --alert-bg: linear-gradient(90deg, rgba(245, 158, 11, 0.2) 0%, rgba(180, 83, 9, 0.08) 100%);
     --alert-border: rgba(245, 158, 11, 0.4);
@@ -109,7 +107,6 @@ body {
 .search-bar input { background: transparent; border: none; outline: none; color: var(--text-main); width: 100%; font-size: 13px; }
 .search-bar button { background: var(--primary); color: #fff; border: none; padding: 6px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 13px; }
 
-/* Always Visible Adaptive Alert Banner */
 .alert-banner {
     background: var(--alert-bg);
     border: 1px solid var(--alert-border);
@@ -183,22 +180,26 @@ body {
 .right-card { display: flex; flex-direction: column; gap: 20px; width: 100%; overflow: hidden; }
 .block-title { font-size: 11px; font-weight: 800; color: var(--text-muted); letter-spacing: 0.8px; margin-bottom: 10px; }
 
-/* Fixed Horizontal Scroller */
+/* Laptop & Desktop Scroller Wrapper */
 .forecast-scroller-wrapper {
     position: relative;
     display: flex;
     align-items: center;
     width: 100%;
+    padding: 0 36px; /* Padding for laptop navigation arrows */
 }
+
 .nav-arrow {
     position: absolute;
-    z-index: 10;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 99;
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    color: var(--text-main);
+    background: var(--inner-card-bg);
+    border: 1px solid var(--primary);
+    color: var(--primary);
     font-size: 18px;
     display: flex;
     align-items: center;
@@ -206,15 +207,20 @@ body {
     cursor: pointer;
     backdrop-filter: blur(10px);
     user-select: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
-.left-arrow { left: 4px; }
-.right-arrow { right: 4px; }
+.nav-arrow:hover {
+    background: var(--primary);
+    color: #fff;
+}
+.left-arrow { left: 0; }
+.right-arrow { right: 0; }
 
 .forecast-row {
     display: flex;
     gap: 12px;
-    overflow-x: scroll;
-    padding: 6px 12px;
+    overflow-x: auto;
+    padding: 6px 2px;
     width: 100%;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
@@ -251,7 +257,6 @@ body {
     max-width: 100%;
 }
 
-/* Mobile Adaptive Rules for iOS & Android */
 @media (max-width: 850px) {
     body { padding: 10px; }
     .dashboard-grid { grid-template-columns: 1fr; }
@@ -260,5 +265,6 @@ body {
     .search-bar { flex: 1; }
     .card { padding: 16px; }
     .main-temp-display h1 { font-size: 54px; }
-    .nav-arrow { display: none; } /* Hide arrows on touch screens to allow native swipe */
+    .forecast-scroller-wrapper { padding: 0; }
+    .nav-arrow { display: none; }
 }
