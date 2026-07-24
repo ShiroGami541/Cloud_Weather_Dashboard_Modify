@@ -31,13 +31,13 @@
             </div>
         </nav>
 
-        <!-- Always Displayed Weather Alert -->
+        <!-- Dynamic Weather Alert Banner -->
         <div class="alert-banner" id="alert-banner">
             <div class="alert-content">
-                <span class="alert-icon">⚡</span>
+                <span class="alert-icon" id="alert-icon">⚡</span>
                 <div class="alert-text">
-                    <h4 id="alert-title">WEATHER ADVISORY & ALERT</h4>
-                    <p id="alert-desc">Storm and rainfall advisory active for Vadodara, IN.</p>
+                    <h4 id="alert-title">STORM & RAINFALL ALERT</h4>
+                    <p id="alert-desc">Monitoring atmospheric conditions...</p>
                 </div>
             </div>
         </div>
@@ -58,29 +58,29 @@
 
                 <div class="hero-temperature-box">
                     <div class="temp-header">
-                        <span class="badge" id="weather-condition">Overcast</span>
+                        <span class="badge" id="weather-condition">Loading...</span>
                     </div>
 
                     <div class="main-temp-display">
-                        <h1 id="main-temp">26°</h1>
+                        <h1 id="main-temp">--°</h1>
                         <div class="temp-sub-details">
-                            <span class="sub-temp" id="high-low">H: 30° &nbsp;•&nbsp; L: 25°</span>
-                            <span class="feels-like-tag" id="feels-like">Feels like 31°</span>
+                            <span class="sub-temp" id="high-low">H: --° &nbsp;•&nbsp; L: --°</span>
+                            <span class="feels-like-tag" id="feels-like">Feels like --°</span>
                         </div>
                     </div>
 
                     <div class="hero-packed-info">
                         <div class="hero-info-chip">
                             <span class="chip-icon">💨</span>
-                            <span class="chip-value" id="wind-val">15 km/h</span>
+                            <span class="chip-value" id="wind-val">-- km/h</span>
                         </div>
                         <div class="hero-info-chip">
                             <span class="chip-icon">💧</span>
-                            <span class="chip-value" id="humidity-val">94%</span>
+                            <span class="chip-value" id="humidity-val">--%</span>
                         </div>
                         <div class="hero-info-chip">
                             <span class="chip-icon">☀️</span>
-                            <span class="chip-value" id="uv-val">UV 6</span>
+                            <span class="chip-value" id="uv-val">UV --</span>
                         </div>
                     </div>
                 </div>
@@ -88,7 +88,7 @@
                 <div class="hero-footer-stats">
                     <div class="mini-stat">
                         <span class="label">PRESSURE</span>
-                        <span class="val" id="pressure-val">996 hPa</span>
+                        <span class="val" id="pressure-val">-- hPa</span>
                     </div>
                     <div class="divider-line"></div>
                     <div class="mini-stat">
