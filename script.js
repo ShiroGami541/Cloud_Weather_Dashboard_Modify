@@ -1,49 +1,104 @@
 let currentCityTimezone = 'UTC';
 let clockInterval = null;
 
-const map = L.map('map').setView([22.3072, 73.1812], 10);
+const map = L.map('map').setView([20, 0], 2);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap'
 }).addTo(map);
-
-setTimeout(() => { map.invalidateSize(); }, 300);
 
 document.getElementById('theme-toggle').addEventListener('click', () => {
     document.body.classList.toggle('light-mode');
 });
 
-document.getElementById('search-btn').addEventListener('click', () => {
-    const city = document.getElementById('city-input').value;
-    if (city) fetchCoordinates(city);
-});
-
+document.getElementById('search-btn').addEventListener('click', handleSearch);
 document.getElementById('city-input').addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        const city = document.getElementById('city-input').value;
-        if (city) fetchCoordinates(city);
-    }
+    if (e.key === 'Enter') handleSearch();
 });
 
-// Laptop/Desktop Arrow Scroll Controller
-document.addEventListener('DOMContentLoaded', () => {
-    const forecastRow = document.getElementById('forecast-container');
-    const leftBtn = document.getElementById('scroll-left');
-    const rightBtn = document.getElementById('scroll-right');
+document.getElementById('location-btn').addEventListener('click', getUserLocation);
 
-    if (leftBtn && forecastRow) {
-        leftBtn.addEventListener('click', () => {
-            forecastRow.scrollBy({ left: -220, behavior: 'smooth' });
-        });
+function handleSearch() {
+    const city = document.getElementById('city-input').value.trim();
+    if (city) fetchCoordinates(city);
+}
+
+// Get User's Geolocation directly
+function getUserLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (pos) => {
+                const { latitude, longitude } = pos.coords;
+                reverseGeocodeAndFetch(latitude, longitude);
+            },
+            () => {
+                // Fallback to IP location if permission denied
+                fetch('https://ipapi.co/json/')
+                    .then(res => res.json())
+                    .then(data => {
+                        document.getElementById('city-name').innerText = `${data.city}, ${data.country_code}`;
+                        updateMapAndWeather(data.latitude, data.longitude, data.timezone);
+                    })
+                    .catch(() => fetchCoordinates('Tokyo'));
+            }
+        );
+    } else {
+        fetchCoordinates('Tokyo');
     }
+}
 
-    if (rightBtn && forecastRow) {
-        rightBtn.addEventListener('click', () => {
-            forecastRow.scrollBy({ left: 220, behavior: 'smooth' });
-        });
+async function reverseGeocodeAndFetch(lat, lon) {
+    try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
+        const data = await res.json();
+        const city = data.address.city || data.address.town || data.address.village || data.address.state || "My Location";
+        const country = data.address.country_code ? data.address.country_code.toUpperCase() : "";
+        document.getElementById('city-name').innerText = country ? `${city}, ${country}` : city;
+        updateMapAndWeather(lat, lon);
+    } catch {
+        document.getElementById('city-name').innerText = "Current Location";
+        updateMapAndWeather(lat, lon);
     }
-});
+}
 
-// Real-Time Clock Function
+async function fetchCoordinates(cityName) {
+    try {
+        const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cityName)}&count=1&language=en&format=json`);
+        const data = await res.json();
+        if (data.results && data.results.length > 0) {
+            const { latitude, longitude, name, country_code, timezone } = data.results[0];
+            document.getElementById('city-name').innerText = `${name}, ${country_code}`;
+            updateMapAndWeather(latitude, longitude, timezone);
+        } else {
+            alert('City not found!');
+        }
+    } catch (err) {
+        console.error("Geocoding error:", err);
+    }
+}
+
+function updateMapAndWeather(lat, lon, timezoneHint = null) {
+    map.setView([lat, lon], 10);
+    setTimeout(() => { map.invalidateSize(); }, 300);
+    fetchWeatherData(lat, lon, timezoneHint);
+}
+
+async function fetchWeatherData(lat, lon, timezoneHint) {
+    try {
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,surface_pressure,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,uv_index_max&timezone=auto`;
+        const res = await fetch(url);
+        const data = await res.json();
+
+        const tz = timezoneHint || data.timezone || 'UTC';
+        startRealtimeClock(tz);
+
+        updateCurrentWeather(data);
+        updateForecast(data.daily);
+    } catch (err) {
+        console.error("Weather data fetch error:", err);
+    }
+}
+
+// Dynamic City-Specific Clock
 function startRealtimeClock(timezone) {
     currentCityTimezone = timezone;
 
@@ -60,7 +115,6 @@ function startRealtimeClock(timezone) {
             });
             document.getElementById('current-time').innerText = formatter.format(now);
         } catch (err) {
-            console.error("Timezone formatting error:", err);
             document.getElementById('current-time').innerText = new Date().toLocaleTimeString();
         }
     }
@@ -68,40 +122,6 @@ function startRealtimeClock(timezone) {
     if (clockInterval) clearInterval(clockInterval);
     updateTime();
     clockInterval = setInterval(updateTime, 1000);
-}
-
-async function fetchCoordinates(cityName) {
-    try {
-        const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cityName)}&count=1&language=en&format=json`);
-        const data = await res.json();
-        if (data.results && data.results.length > 0) {
-            const { latitude, longitude, name, country_code } = data.results[0];
-            document.getElementById('city-name').innerText = `${name}, ${country_code}`;
-            map.setView([latitude, longitude], 10);
-            setTimeout(() => { map.invalidateSize(); }, 200);
-            fetchWeatherData(latitude, longitude);
-        }
-    } catch (err) {
-        console.error("Geocoding failed:", err);
-    }
-}
-
-async function fetchWeatherData(lat, lon) {
-    try {
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,surface_pressure,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,uv_index_max&timezone=auto`;
-        const res = await fetch(url);
-        const data = await res.json();
-
-        // Start live clock for searched city's timezone
-        if (data.timezone) {
-            startRealtimeClock(data.timezone);
-        }
-
-        updateCurrentWeather(data);
-        updateForecast(data.daily);
-    } catch (err) {
-        console.error("Weather fetch failed:", err);
-    }
 }
 
 function updateCurrentWeather(data) {
@@ -113,7 +133,7 @@ function updateCurrentWeather(data) {
 
     document.getElementById('main-temp').innerText = `${temp}°`;
     document.getElementById('feels-like').innerText = `Feels like ${Math.round(current.apparent_temperature)}°`;
-    document.getElementById('high-low').innerText = `H: ${Math.round(daily.temperature_2m_max[0])}°  •  L: ${Math.round(daily.temperature_2m_min[0])}°`;
+    document.getElementById('high-low').innerText = `H: ${Math.round(daily.temperature_2m_max[0])}° • L: ${Math.round(daily.temperature_2m_min[0])}°`;
 
     document.getElementById('wind-val').innerText = `${Math.round(current.wind_speed_10m)} km/h`;
     document.getElementById('humidity-val').innerText = `${Math.round(current.relative_humidity_2m)}%`;
@@ -165,7 +185,6 @@ function updateCurrentWeather(data) {
 function updateForecast(daily) {
     const container = document.getElementById('forecast-container');
     container.innerHTML = '';
-
     const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
     for (let i = 0; i < daily.time.length; i++) {
@@ -205,4 +224,19 @@ function getWeatherIcon(code) {
     return '☁️';
 }
 
-fetchCoordinates('Vadodara');
+// Scroller Arrow Handlers
+document.addEventListener('DOMContentLoaded', () => {
+    const forecastRow = document.getElementById('forecast-container');
+    const leftBtn = document.getElementById('scroll-left');
+    const rightBtn = document.getElementById('scroll-right');
+
+    if (leftBtn && forecastRow) {
+        leftBtn.addEventListener('click', () => forecastRow.scrollBy({ left: -220, behavior: 'smooth' }));
+    }
+    if (rightBtn && forecastRow) {
+        rightBtn.addEventListener('click', () => forecastRow.scrollBy({ left: 220, behavior: 'smooth' }));
+    }
+
+    // Auto-detect location on initial page open
+    getUserLocation();
+});
