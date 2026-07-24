@@ -19,8 +19,9 @@
                 <h2>Weather Forecast Dashboard</h2>
             </div>
             <div class="nav-controls">
+                <button id="location-btn" title="Use Current Location">📍 My Location</button>
                 <div class="search-bar">
-                    <input type="text" id="city-input" placeholder="Search city..." value="Vadodara">
+                    <input type="text" id="city-input" placeholder="Search city...">
                     <button id="search-btn">Search</button>
                 </div>
                 <div class="theme-toggle" id="theme-toggle">
@@ -50,8 +51,8 @@
 
                 <div class="card-header">
                     <div>
-                        <h1 id="city-name">Vadodara, IN</h1>
-                        <p class="timestamp" id="current-time">Loading local time...</p>
+                        <h1 id="city-name">Detecting location...</h1>
+                        <p class="timestamp" id="current-time">--</p>
                     </div>
                 </div>
 
@@ -101,9 +102,9 @@
                 <div>
                     <h3 class="block-title">WEEKLY FORECAST</h3>
                     <div class="forecast-scroller-wrapper">
-                        <button class="nav-arrow left-arrow" id="scroll-left" type="button" aria-label="Scroll Left">‹</button>
+                        <button class="nav-arrow left-arrow" id="scroll-left" type="button">‹</button>
                         <div class="forecast-row" id="forecast-container"></div>
-                        <button class="nav-arrow right-arrow" id="scroll-right" type="button" aria-label="Scroll Right">›</button>
+                        <button class="nav-arrow right-arrow" id="scroll-right" type="button">›</button>
                     </div>
                 </div>
 
