@@ -102,7 +102,20 @@ body {
 }
 .brand h2 { font-size: 16px; font-weight: 800; }
 
-.nav-controls { display: flex; gap: 12px; align-items: center; }
+.nav-controls { display: flex; gap: 10px; align-items: center; }
+#location-btn {
+    background: var(--inner-card-bg);
+    border: 1px solid var(--card-border);
+    color: var(--text-main);
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+}
+#location-btn:hover { background: var(--primary); color: #fff; }
+
 .search-bar { display: flex; gap: 8px; background: var(--inner-card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 6px 12px; width: 220px; }
 .search-bar input { background: transparent; border: none; outline: none; color: var(--text-main); width: 100%; font-size: 13px; }
 .search-bar button { background: var(--primary); color: #fff; border: none; padding: 6px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 13px; }
@@ -208,10 +221,7 @@ body {
     user-select: none;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
-.nav-arrow:hover {
-    background: var(--primary);
-    color: #fff;
-}
+.nav-arrow:hover { background: var(--primary); color: #fff; }
 .left-arrow { left: 0; }
 .right-arrow { right: 0; }
 
@@ -260,7 +270,7 @@ body {
     body { padding: 10px; }
     .dashboard-grid { grid-template-columns: 1fr; }
     .top-nav { flex-direction: column; align-items: stretch; gap: 10px; }
-    .nav-controls { width: 100%; justify-content: space-between; }
+    .nav-controls { width: 100%; justify-content: space-between; flex-wrap: wrap; }
     .search-bar { flex: 1; }
     .card { padding: 16px; }
     .main-temp-display h1 { font-size: 54px; }
