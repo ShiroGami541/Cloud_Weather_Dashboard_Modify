@@ -3,7 +3,6 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap'
 }).addTo(map);
 
-// Fix map border clipping on initial render
 setTimeout(() => { map.invalidateSize(); }, 300);
 
 document.getElementById('theme-toggle').addEventListener('click', () => {
@@ -15,12 +14,15 @@ document.getElementById('search-btn').addEventListener('click', () => {
     if (city) fetchCoordinates(city);
 });
 
+// Fixed Horizontal Button Navigation
 const forecastRow = document.getElementById('forecast-container');
-document.getElementById('scroll-left').addEventListener('click', () => {
-    forecastRow.scrollBy({ left: -160, behavior: 'smooth' });
+document.getElementById('scroll-left').addEventListener('click', (e) => {
+    e.preventDefault();
+    forecastRow.scrollBy({ left: -180, behavior: 'smooth' });
 });
-document.getElementById('scroll-right').addEventListener('click', () => {
-    forecastRow.scrollBy({ left: 160, behavior: 'smooth' });
+document.getElementById('scroll-right').addEventListener('click', (e) => {
+    e.preventDefault();
+    forecastRow.scrollBy({ left: 180, behavior: 'smooth' });
 });
 
 async function fetchCoordinates(cityName) {
@@ -55,8 +57,11 @@ async function fetchWeatherData(lat, lon) {
 function updateCurrentWeather(data) {
     const current = data.current;
     const daily = data.daily;
+    const temp = Math.round(current.temperature_2m);
+    const code = current.weather_code;
+    const cityName = document.getElementById('city-name').innerText;
 
-    document.getElementById('main-temp').innerText = `${Math.round(current.temperature_2m)}°`;
+    document.getElementById('main-temp').innerText = `${temp}°`;
     document.getElementById('feels-like').innerText = `Feels like ${Math.round(current.apparent_temperature)}°`;
     document.getElementById('high-low').innerText = `H: ${Math.round(daily.temperature_2m_max[0])}°  •  L: ${Math.round(daily.temperature_2m_min[0])}°`;
 
@@ -65,13 +70,47 @@ function updateCurrentWeather(data) {
     document.getElementById('uv-val').innerText = `UV ${Math.round(daily.uv_index_max[0])}`;
     document.getElementById('pressure-val').innerText = `${Math.round(current.surface_pressure)} hPa`;
 
-    const code = current.weather_code;
-    const cityName = document.getElementById('city-name').innerText;
     document.getElementById('weather-condition').innerText = getWeatherDescription(code);
 
-    // Keep alert banner content updated dynamically
-    document.getElementById('alert-title').innerText = "WEATHER ADVISORY & ALERT";
-    document.getElementById('alert-desc').innerText = `Active storm/rain advisory for ${cityName}. Wind speed: ${Math.round(current.wind_speed_10m)} km/h.`;
+    // Dynamic Weather Alert Logic (Heat, Cold, Storm, Snow, Rain)
+    const alertBanner = document.getElementById('alert-banner');
+    const alertTitle = document.getElementById('alert-title');
+    const alertDesc = document.getElementById('alert-desc');
+    const alertIcon = document.getElementById('alert-icon');
+
+    alertBanner.className = 'alert-banner'; // Reset classes
+
+    if (code >= 80 || code === 95 || code === 96 || code === 99) {
+        alertBanner.classList.add('alert-storm');
+        alertIcon.innerText = '⚡';
+        alertTitle.innerText = 'STORM & SEVERE WEATHER WARNING';
+        alertDesc.innerText = `Thunderstorm or severe rain advisory in effect for ${cityName}.`;
+    } else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) {
+        alertBanner.classList.add('alert-storm');
+        alertIcon.innerText = '🌧️';
+        alertTitle.innerText = 'RAIN & SHOWER ADVISORY';
+        alertDesc.innerText = `Precipitation and wet conditions active in ${cityName}.`;
+    } else if ((code >= 71 && code <= 77) || (code >= 85 && code <= 86)) {
+        alertBanner.classList.add('alert-cold');
+        alertIcon.innerText = '❄️';
+        alertTitle.innerText = 'SNOW & FREEZING ALERT';
+        alertDesc.innerText = `Snowfall and freezing condition warning active for ${cityName}.`;
+    } else if (temp >= 35) {
+        alertBanner.classList.add('alert-heat');
+        alertIcon.innerText = '🔥';
+        alertTitle.innerText = 'EXTREME HEAT ADVISORY';
+        alertDesc.innerText = `High temperature alert active for ${cityName} (${temp}°C). Stay hydrated.`;
+    } else if (temp <= 5) {
+        alertBanner.classList.add('alert-cold');
+        alertIcon.innerText = '🥶';
+        alertTitle.innerText = 'COLD WAVE ADVISORY';
+        alertDesc.innerText = `Low temperature advisory active for ${cityName} (${temp}°C).`;
+    } else {
+        alertBanner.classList.add('alert-heat');
+        alertIcon.innerText = '☀️';
+        alertTitle.innerText = 'WEATHER ADVISORY';
+        alertDesc.innerText = `Normal weather conditions currently recorded for ${cityName}.`;
+    }
 }
 
 function updateForecast(daily) {
